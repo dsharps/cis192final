@@ -11,6 +11,10 @@
       <li><h2>{{ tweet.time_created|safe }}</h2>{{ tweet.text|safe }}
     {% endfor %}
     </ul>
+    <li><h2>Most popular tweet: </h2>
+      <div>
+        <h2>{{ twitter_user.most_pop.time_created|safe }}</h2>{{ twitter_user.most_pop.text|safe }}
+      </div>
   </ul>
 
 {% endblock %}
