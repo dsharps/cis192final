@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+  <div>
+    <h1>Who are you?</h1>
+    <div>
+      <form action="{{ url_for('stats') }}" method=post class=add-entry>
+        <dl>
+          <dt>Username:
+          <input type=text size=30 name=username>
+          <input type=submit value=Search>
+        </dl>
+      </form>
+    </div>
+  </div>
+{% endblock %}

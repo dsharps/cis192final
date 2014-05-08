@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>{{ twitter_user.screen_name }}</h2>
+  Here's your info!
+  <ul>
+    <li><h2>Followers: </h2>{{ twitter_user.followers_num }}
+    <li><h2>Following: </h2>{{ twitter_user.following_num }}
+    <li><h2>Some recent tweets: </h2>
+    <ul class=entries>
+    {% for tweet in twitter_user.tweets[:5] %}
+      <li><h2>{{ tweet.time_created|safe }}</h2>{{ tweet.text|safe }}
+    {% endfor %}
+    </ul>
+  </ul>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+<!doctype html>
+<title>I love twitter</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<div class=page>
+  <h1>TwitterStats</h1>
+  <div>
+    Hey there. Wanna know some stats about your twitter?
+  </div>
+  {% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+  {% endfor %}
+  {% block body %}{% endblock %}
+</div>
