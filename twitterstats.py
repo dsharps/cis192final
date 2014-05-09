@@ -1,5 +1,6 @@
 import requests
 import base64
+import datetime
 
 consumer_key = 'swxgDjmwyDgArD7qzLt9oOmsO'
 consumer_secret = 'c3eGzKi5O2sXZ7bivL491Mm84XTEocEjuLFtqNjZoQRSyfyzBd'
@@ -146,14 +147,22 @@ class Tweet(object):
 
 
 #MIGHT THROW AN ERROR IF FIRST_TWEET IS NONE
+#Returns number of tweets, time of first tweet, and tweets/day average
 def find_num_tweets(twitter_user):
     num_tweets = len(twitter_user.tweets)
     first_tweet = twitter_user.tweets[-1]
     time = first_tweet.time_created
-    return (num_tweets, time)
+    now = datetime.datetime.now()
+    
+    #Find the time difference
+    month_translation = {'Jan':1, 'Feb':2, 'Mar':3, 'Apr':4, 'May':5, 'Jun':6, 'Jul':7, 'Aug':8, \
+        'Sep':9, 'Oct':10, 'Nov':11, 'Dec':12}
+    first_tweet_date = datetime.date(int(time[12:16]), month_translation[time[4:7]], int(time[8:10]))
+    today_date = datetime.date(now.year, now.month, now.day)
+    time_diff = (today_date - first_tweet_date).days
 
-    '''Need to put time into better format, calcualte how many days have passed since time
-    first tweeted, and then compute the average tweets per day'''
+    return (num_tweets, time, float(num_tweets)/float(time_diff))
+
 
 
 #NEED TO CHECK IF THERE ARE ANY FOLLOWERS, ERROR HANDLE
@@ -224,10 +233,8 @@ def curse_words_per_tweet(twitter_user):
 
 
 '''Potentially also want to add the following stats:
-    -variety of vocabulary
     -average length of tweet
     -average curse words per tweet
-    -average number of links
 '''
 
 
@@ -240,6 +247,8 @@ def main():
     nph_numtweets = find_num_tweets(nph)
     print nph.screen_name + " has tweeted " + str(nph_numtweets[0]) + \
         " times since " + str(nph_numtweets[1])
+
+    print nph.screen_name + " has an average of " + str(nph_numtweets[2]) + " tweets per day"
 
     print nph.screen_name + "'s Following/Followers ratio is " + str(following_followers_ratio(nph))
 
