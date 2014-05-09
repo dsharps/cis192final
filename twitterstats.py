@@ -31,7 +31,6 @@ def get_access_token(consumer_key, consumer_secret):
 
 #Get the access token for our key and secret
 access_token = get_access_token(consumer_key, consumer_secret)
-#access_token = hw9edit.get_access_token(consumer_key, consumer_secret)
 headers = {'Authorization': access_token}
 
 
@@ -56,6 +55,22 @@ class TwitterUser(object):
         tweets_search_url = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
         tweets_params = {'screen_name': name, 'count': 200}
         tweets_req = requests.get(tweets_search_url, params=tweets_params, headers=headers)
+
+
+        '''NEED TO DECIDE HOW TO ERROR HANDLE:
+        The following few lines of code will throw an error if the username entered is either
+        invalid or the user's tweets are protected. Need to decide if we are just going to throw
+        an error, or if we're going to create a TwitterUser, or what.
+
+        NOTE that we also have to handle errors for the functions with the stats--a lot of users
+        have 0 tweets so that will cause an issue when we do some calculations.
+
+        I'm not sure how you want to handle this. I've noted which functions could be problematic.
+        '''
+        #Check to make sure have access to tweets (won't pass if tweets protected)
+        if (tweets_req.status_code != 200):
+            req.raise_for_status()
+
         self.tweets = [Tweet(tweet_dict) for tweet_dict in tweets_req.json()]
 
         #Loop 15 times because already got 200 and 16*200 = 3200 is the most twitter can recover
@@ -119,6 +134,7 @@ class Tweet(object):
 
 
 
+#MIGHT THROW AN ERROR IF FIRST_TWEET IS NONE
 def find_num_tweets(twitter_user):
     num_tweets = len(twitter_user.tweets)
     first_tweet = twitter_user.tweets[-1]
@@ -129,12 +145,14 @@ def find_num_tweets(twitter_user):
     first tweeted, and then compute the average tweets per day'''
 
 
+#NEED TO CHECK IF THERE ARE ANY FOLLOWERS, ERROR HANDLE
 def following_followers_ratio(twitter_user):
     return float(twitter_user.following_num)/float(twitter_user.followers_num)
 
     #Maybe have tiers--if your ratio is below 1/1000, CELEBRITY STATUS WOOHOO
 
 
+#NEED TO CHECK IF THERE ARE ANY TWEETS, ERROR HANDLE
 def least_popular_tweet(twitter_user):
     #Calculate tweet popularity as favorites+retweets
     least_pop = twitter_user.tweets[0]
@@ -146,6 +164,7 @@ def least_popular_tweet(twitter_user):
     return least_pop
 
 
+#NEED TO CHECK IF THERE ARE ANY TWEETS, ERROR HANDLE
 def most_popular_tweet(twitter_user):
     #Calculate tweet popularity as favorites+retweets
     most_pop = twitter_user.tweets[0]
@@ -157,6 +176,7 @@ def most_popular_tweet(twitter_user):
     return most_pop
 
 
+#NEED TO CHECK IF THERE ARE ANY TWEETS, ERROR HANDLE
 def average_hashtags(twitter_user):
     #Calculate the average number of hashtags per tweet
     hashtag_num = 0
@@ -170,9 +190,14 @@ def average_hashtags(twitter_user):
     or something is wrong'''
 
 
+#NEED TO CHECK IF THERE ARE ANY TWEETS, ERROR HANDLE
 def average_favorites(twitter_user):
-    #Calculate the average number of hashtags per tweet
+    #Calculate the average number of favorites per tweet
     favorites_num = 0
+
+    #If no tweets, return 0
+    #if twitter_user.tweets == []:
+
 
     for tweet in twitter_user.tweets:
         favorites_num += tweet.favorite_count
