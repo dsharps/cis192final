@@ -68,33 +68,42 @@ class TwitterUser(object):
         I'm not sure how you want to handle this. I've noted which functions could be problematic.
         '''
         #Check to make sure have access to tweets (won't pass if tweets protected)
+        self.error = None
         if (tweets_req.status_code != 200):
-            req.raise_for_status()
+            #tweets_req.raise_for_status()
+            self.error = "User Not Available"
+            self.tweets = {}
+            self.followers_num = 0
+            self.following_num = 0
+            self.most_pop = None
+            self.followers = []
+        else:
+            self.tweets = [Tweet(tweet_dict) for tweet_dict in tweets_req.json()]
 
-        self.tweets = [Tweet(tweet_dict) for tweet_dict in tweets_req.json()]
+            #Loop 15 times because already got 200 and 16*200 = 3200 is the most twitter can recover
+            for _ in xrange(15):
+                #subtract 1 to make it exclusively older than last one
+                last_tweet_id = self.tweets[-1].id - 1
+                tweets_params_new = {'screen_name': name, 'count': 200, 'max_id' : last_tweet_id}
+                tweets_req_new = requests.get(tweets_search_url, params=tweets_params_new, headers=headers)
 
-        #Loop 15 times because already got 200 and 16*200 = 3200 is the most twitter can recover
-        for _ in xrange(15):
-            #subtract 1 to make it exclusively older than last one
-            last_tweet_id = self.tweets[-1].id - 1
-            tweets_params_new = {'screen_name': name, 'count': 200, 'max_id' : last_tweet_id}
-            tweets_req_new = requests.get(tweets_search_url, params=tweets_params_new, headers=headers)
+                for tweet_dict in tweets_req_new.json():
+                    self.tweets.append(Tweet(tweet_dict))
 
-            for tweet_dict in tweets_req_new.json():
-                self.tweets.append(Tweet(tweet_dict))
+            #Get the number of followers and following
+            self.followers_num = tweets_req.json()[0]['user']['followers_count']
+            self.following_num = tweets_req.json()[0]['user']['friends_count']
 
-        #Get the number of followers and following
-        self.followers_num = tweets_req.json()[0]['user']['followers_count']
-        self.following_num = tweets_req.json()[0]['user']['friends_count']
+            self.most_pop = most_popular_tweet(self)
 
-        self.most_pop = most_popular_tweet(self)
-
-        #find the list of last ten followers
-        followers_search_url = 'https://api.twitter.com/1.1/followers/list.json'
-        followers_params = {'screen_name': name, 'count': 10}
-        followers_req = requests.get(followers_search_url, params=followers_params, headers=headers)
-        self.followers = sorted([follower['screen_name'] for follower in followers_req.json()['users']])
-
+            #find the list of last ten followers
+            followers_search_url = 'https://api.twitter.com/1.1/followers/list.json'
+            followers_params = {'screen_name': name, 'count': 10}
+            followers_req = requests.get(followers_search_url, params=followers_params, headers=headers)
+            self.followers = sorted([follower['screen_name'] for follower in followers_req.json()['users']])
+            self.num_tweets = find_num_tweets(self)
+            self.hashtags_per_tweet = average_hashtags(self)
+            self.favorites_per_tweet = average_favorites(self)
 
 
 class Tweet(object):
@@ -118,7 +127,8 @@ class Tweet(object):
         self.text = tweet_dict['text']
         self.hashtags = tweet_dict['entities']['hashtags']
         self.id = tweet_dict['id']
-        self.time_created = tweet_dict['created_at']
+        t = tweet_dict['created_at']
+        self.time_created = t[:-20]+', '+t[-4:]+' '+t[-19:-11]
         self.favorite_count = tweet_dict['favorite_count']
         self.retweet_count = tweet_dict['retweet_count']
 

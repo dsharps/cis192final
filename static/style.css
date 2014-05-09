@@ -1,18 +1,26 @@
 body            { font-family: sans-serif; background: #eee; }
-a, h1, h2       { color: #377ba8; }
-h1, h2          { font-family: 'Georgia', serif; margin: 0; }
-h1              { border-bottom: 2px solid #eee; }
-h2              { font-size: 1.2em; }
+a, h1, h2       { color: #27ae60; }
+h1, h2          { font-family: 'Arvo', sans-serif; margin: 0; }
+h1              { border-bottom: 2px solid #eee; font-size: 3.2em; font-weight: 400; }
+h2              { font-size: 2.2em; font-weight: 700; }
+ul              { list-style: none; padding-right: 40px; }
 
-.page           { margin: 2em auto; width: 35em; border: 5px solid #ccc;
+.page           { margin: 2em auto; width: 45em; border: 5px solid #ccc;
                   padding: 0.8em; background: white; }
 .entries        { list-style: none; margin: 0; padding: 0; }
 .entries li     { margin: 0.8em 1.2em; }
 .entries li h2  { margin-left: -1em; }
+.section        { font-family: 'Arvo'; font-size: 1.8em; font-weight: 400; color: #2c3e50;}
+.tweettime      { font-family: 'Arvo'; font-size: 1em; font-weight: 700; font-style: italic; color: #f39c12;}
+.username       { font-family: 'Arvo'; font-size: 3em; font-weight: 700; color: #27ae60; margin-left: 28px; margin-bottom: 10px; }
+.mostpopular    { margin-top: 10px; margin-bottom: 10px; margin-left: auto; margin-right: auto; width: 80%;}
+.big            { font-size: 1.5em; }
+.huge           { font-size: 3em;}
+.subtext        { margin: 0.8em; }
 .add-entry      { font-size: 0.9em; border-bottom: 1px solid #ccc; }
 .add-entry dl   { font-weight: bold; }
 .metanav        { text-align: right; font-size: 0.8em; padding: 0.3em;
                   margin-bottom: 1em; background: #fafafa; }
-.flash          { background: #cee5F5; padding: 0.5em;
-                  border: 1px solid #aacbe2; }
+.flash          { background: #ecf0f1; padding: 0.5em;
+                  border: 1px solid #7f8c8d; }
 .error          { background: #f0d6d6; padding: 0.5em; }

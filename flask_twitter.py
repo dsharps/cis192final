@@ -36,13 +36,15 @@ def stats(username=None):
             print request.form['username']
             print type(request.form['username'])
             print request.form['username'] == 'dsharps'
-            flash('Thanks!')
         else:
             error = "Enter your username!"
     
     user = TwitterUser(username)
-
-    return render_template('user.html', twitter_user=user)
+    if user.error:
+        flash('Something went wrong!')
+        return render_template('error.html', twitter_user=user)
+    else:
+        return render_template('user.html', twitter_user=user)
 
 if __name__ == '__main__':
     app.run()

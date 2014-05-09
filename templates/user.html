@@ -1,19 +1,50 @@
 {% extends "layout.html" %}
 {% block body %}
-  <h2>{{ twitter_user.screen_name }}</h2>
-  Here's your info!
+
+  <div class="section username">{{ twitter_user.screen_name }}</div>
+  <div style="width: 67%; margin-left: auto; margin-right: auto;">
+    <div style="width: 51%; margin-left: 20px; display: inline-block;">
+      <div class="section">Followers: </div>
+      <div class="huge">{{ twitter_user.followers_num }}</div>
+    </div>
+    <div style="width: 30%; margin-left: 20px; display: inline-block;">
+      <div class="section">Following: </div>
+      <div class="huge">{{ twitter_user.following_num }}</div>
+    </div>
+  </div>
   <ul>
-    <li><h2>Followers: </h2>{{ twitter_user.followers_num }}
-    <li><h2>Following: </h2>{{ twitter_user.following_num }}
-    <li><h2>Some recent tweets: </h2>
-    <ul class=entries>
-    {% for tweet in twitter_user.tweets[:5] %}
-      <li><h2>{{ tweet.time_created|safe }}</h2>{{ tweet.text|safe }}
-    {% endfor %}
-    </ul>
-    <li><h2>Most popular tweet: </h2>
-      <div>
-        <h2>{{ twitter_user.most_pop.time_created|safe }}</h2>{{ twitter_user.most_pop.text|safe }}
+    <!-- Tweet stats -->
+    <li>
+      <div class="section">A breakdown: </div>
+      <ul class="entries">
+        <li>
+          <div class="tweettime">Total Tweets:</div>
+          <div class="big">{{ twitter_user.num_tweets[0] }}</div>
+        <li>
+          <div class="tweettime">Tweets per day:</div>
+        <li>
+          <div class="tweettime">Average hashtags per tweet:</div>
+          <div class="big">{{ twitter_user.hashtags_per_tweet }}</div>
+        <li>
+          <div class="tweettime">Average favorites per tweet:</div>
+          <div class="big">{{ twitter_user.favorites_per_tweet }}</div>
+      </ul>
+    <!-- Recent tweets -->
+    <li>
+      <div class="section">Some recent tweets: </div>
+      <ul class="entries">
+      {% for tweet in twitter_user.tweets[:5] %}
+        <li><div class="tweettime">{{ tweet.time_created|safe }}</div>{{ tweet.text|safe }}
+      {% endfor %}
+      </ul>
+    <!-- Most popular -->
+    <li>
+      <div class="section">Most popular tweet: </div>
+      <div class="mostpopular">
+        <div>
+          <div class="tweettime big">{{ twitter_user.most_pop.time_created|safe }}</div>
+          <div class="big">{{ twitter_user.most_pop.text|safe }}</div>
+        </div>
       </div>
   </ul>
 

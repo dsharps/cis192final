@@ -1,9 +1,10 @@
 <!doctype html>
+<link href='http://fonts.googleapis.com/css?family=Arvo:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
 <title>I love twitter</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 <div class=page>
   <h1>TwitterStats</h1>
-  <div>
+  <div class=subtext>
     Hey there. Wanna know some stats about your twitter?
   </div>
   {% for message in get_flashed_messages() %}
