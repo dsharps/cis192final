@@ -77,6 +77,7 @@ class TwitterUser(object):
             self.followers_num = 0
             self.following_num = 0
             self.most_pop = None
+            self.least_pop = None
             self.followers = []
         else:
             self.tweets = [Tweet(tweet_dict) for tweet_dict in tweets_req.json()]
@@ -96,6 +97,7 @@ class TwitterUser(object):
             self.following_num = tweets_req.json()[0]['user']['friends_count']
 
             self.most_pop = most_popular_tweet(self)
+            self.least_pop = least_popular_tweet(self)
 
             #find the list of last ten followers
             followers_search_url = 'https://api.twitter.com/1.1/followers/list.json'

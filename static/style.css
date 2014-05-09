@@ -15,6 +15,7 @@ ul              { list-style: none; padding-right: 40px; }
 .tweettime      { font-family: 'Arvo'; font-size: 1em; font-weight: 700; font-style: italic; color: #f39c12;}
 .username       { font-family: 'Arvo'; font-size: 3em; font-weight: 700; color: #27ae60; margin-left: 28px; margin-bottom: 10px; }
 .mostpopular    { margin-top: 10px; margin-bottom: 10px; margin-left: auto; margin-right: auto; width: 80%;}
+.firsttweet     { margin-top: 10px; margin-bottom: 10px; margin-left: auto; margin-right: auto; width: 48%;}
 .little         { font-size: 0.8em; color: #bdc3c7; }
 .big            { font-size: 1.5em; }
 .huge           { font-size: 3em;}

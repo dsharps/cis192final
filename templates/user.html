@@ -16,12 +16,20 @@
     <!-- Tweet stats -->
     <li>
       <div class="section">A breakdown: </div>
+      <div class="firsttweet">
+        <div>
+          <div class="tweettime big">Your first tweet was on...</div>
+          <div class="big">{{ twitter_user.num_tweets[1] }}</div>
+        </div>
+      </div>
+
       <ul class="entries">
         <li>
           <div class="tweettime">Total Tweets:</div>
-          <div class="big">{{ twitter_user.num_tweets }}</div>
+          <div class="big">{{ twitter_user.num_tweets[0] }}</div>
         <li>
           <div class="tweettime">Tweets per day:</div>
+          <div class="big">{{ twitter_user.num_tweets[2] }}</div>
         <li>
           <div class="tweettime">Average hashtags per tweet:</div>
           <div class="big">{{ twitter_user.hashtags_per_tweet }}</div>
@@ -50,6 +58,16 @@
           <div class="tweettime big">{{ twitter_user.most_pop.time_created|safe }}</div>
           <div class="big">{{ twitter_user.most_pop.text|safe }}</div>
           <div class="little brightblue">Favorites: {{ twitter_user.most_pop.favorite_count }} Retweets: {{ twitter_user.most_pop.retweet_count }}</div>
+        </div>
+      </div>
+    <!-- Least popular -->
+    <li>
+      <div class="section">Least popular tweet: </div>
+      <div class="mostpopular">
+        <div>
+          <div class="tweettime big">{{ twitter_user.least_pop.time_created|safe }}</div>
+          <div class="big">{{ twitter_user.least_pop.text|safe }}</div>
+          <div class="little brightblue">Favorites: {{ twitter_user.least_pop.favorite_count }} Retweets: {{ twitter_user.least_pop.retweet_count }}</div>
         </div>
       </div>
   </ul>
