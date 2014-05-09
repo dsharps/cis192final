@@ -1,13 +1,15 @@
 {% extends "layout.html" %}
 {% block body %}
   <div>
-    <h1>Who are you?</h1>
-    <div>
+    <div class="description">Twitter stats uses the Twitter API to gather public information about your account and pull out some cool stats! Look up all your favorite friends and celebrities! For extra fun, you can look up your least favorite friends and judge their pitiful social media presence.</div>
+    <div style="width: 56%; margin-left: auto; margin-right: auto;">
+      <div class="section" style="width: 60%; margin-left: auto; margin-right: auto;">Who are you?</div>
       <form action="{{ url_for('stats') }}" method=post class=add-entry>
         <dl>
-          <dt>Username:
-          <input type=text size=30 name=username>
-          <input type=submit value=Search>
+          <div style="width: 66%; margin-left: auto; margin-right: auto;">
+            <input type=text size=30 name=username>
+            <input type=submit value=Search>
+          </div>
         </dl>
       </form>
     </div>

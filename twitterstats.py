@@ -104,6 +104,7 @@ class TwitterUser(object):
             self.num_tweets = find_num_tweets(self)
             self.hashtags_per_tweet = average_hashtags(self)
             self.favorites_per_tweet = average_favorites(self)
+            self.curses_per_tweet = curse_words_per_tweet(self)
 
 
 class Tweet(object):
@@ -217,6 +218,9 @@ def average_favorites(twitter_user):
 
     '''This claims that CatpunAmerica has 3 favorites, not two... not sure why'''
 
+def curse_words_per_tweet(twitter_user):
+    curses = ["anal","anus","arse","ass","ballsack","balls","bastard","bitch","biatch","bloody","blowjob","blow job","bollock","bollok","boner","boob","bugger","bum","butt","buttplug","clitoris","cock","coon","crap","cunt","damn","dick","dildo","dyke","fag","feck","fellate","fellatio","felching","fuck","f u c k","fudgepacker","fudge packer","flange","Goddamn","God damn","hell","homo","jerk","jizz","knobend","knob end","labia","lmao","lmfao","muff","nigger","nigga","omg","penis","piss","poop","prick","pube","pussy","queer","scrotum","sex","shit","s hit","sh1t","slut","smegma","spunk","tit","tosser","turd","twat","vagina","wank","whore","wtf"]
+    return sum(1.0 for tweet in twitter_user.tweets if any(curse in tweet.text for curse in curses))/float(len(twitter_user.tweets))
 
 
 '''Potentially also want to add the following stats:
