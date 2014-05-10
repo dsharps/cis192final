@@ -57,17 +57,6 @@ class TwitterUser(object):
         tweets_params = {'screen_name': name, 'count': 200}
         tweets_req = requests.get(tweets_search_url, params=tweets_params, headers=headers)
 
-
-        '''NEED TO DECIDE HOW TO ERROR HANDLE:
-        The following few lines of code will throw an error if the username entered is either
-        invalid or the user's tweets are protected. Need to decide if we are just going to throw
-        an error, or if we're going to create a TwitterUser, or what.
-
-        NOTE that we also have to handle errors for the functions with the stats--a lot of users
-        have 0 tweets so that will cause an issue when we do some calculations.
-
-        I'm not sure how you want to handle this. I've noted which functions could be problematic.
-        '''
         #Check to make sure have access to tweets (won't pass if tweets protected)
         self.error = None
         if (tweets_req.status_code != 200):

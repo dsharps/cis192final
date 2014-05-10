@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-  <h2>{{ twitter_user.screen_name }} not found!</h2>
-  Uh oh, it looks like either this user doesn't exist or their tweets are private! Go find someone more interesting to look up.
+  <h2>No data for {{ twitter_user.screen_name }}!</h2>
+  Uh oh, it looks like this user doesn't exist, or they have a private account, or there's not enough data! Go find someone more interesting to look up.
 
 {% endblock %}
