@@ -82,22 +82,27 @@ class TwitterUser(object):
         else:
             self.tweets = [Tweet(tweet_dict) for tweet_dict in tweets_req.json()]
 
-            #Loop 15 times because already got 200 and 16*200 = 3200 is the most twitter can recover
-            for _ in xrange(15):
-                #subtract 1 to make it exclusively older than last one
-                last_tweet_id = self.tweets[-1].id - 1
-                tweets_params_new = {'screen_name': name, 'count': 200, 'max_id' : last_tweet_id}
-                tweets_req_new = requests.get(tweets_search_url, params=tweets_params_new, headers=headers)
+            if self.tweets != []:
+                #Loop 15 times because already got 200 and 16*200 = 3200 is the most twitter can recover
+                for _ in xrange(15):
+                    #subtract 1 to make it exclusively older than last one
+                    last_tweet_id = self.tweets[-1].id - 1
+                    tweets_params_new = {'screen_name': name, 'count': 200, 'max_id' : last_tweet_id}
+                    tweets_req_new = requests.get(tweets_search_url, params=tweets_params_new, headers=headers)
 
-                for tweet_dict in tweets_req_new.json():
-                    self.tweets.append(Tweet(tweet_dict))
+                    for tweet_dict in tweets_req_new.json():
+                        self.tweets.append(Tweet(tweet_dict))
 
-            #Get the number of followers and following
-            self.followers_num = tweets_req.json()[0]['user']['followers_count']
-            self.following_num = tweets_req.json()[0]['user']['friends_count']
+                #Get the number of followers and following
+                self.followers_num = tweets_req.json()[0]['user']['followers_count']
+                self.following_num = tweets_req.json()[0]['user']['friends_count']
 
-            self.most_pop = most_popular_tweet(self)
-            self.least_pop = least_popular_tweet(self)
+                self.most_pop = most_popular_tweet(self)
+                self.least_pop = least_popular_tweet(self)
+
+                self.hashtags_per_tweet = average_hashtags(self)
+                self.favorites_per_tweet = average_favorites(self)
+                self.curses_per_tweet = curse_words_per_tweet(self)
 
             #find the list of last ten followers
             followers_search_url = 'https://api.twitter.com/1.1/followers/list.json'
@@ -105,9 +110,7 @@ class TwitterUser(object):
             followers_req = requests.get(followers_search_url, params=followers_params, headers=headers)
             self.followers = sorted([follower['screen_name'] for follower in followers_req.json()['users']])
             self.num_tweets = find_num_tweets(self)
-            self.hashtags_per_tweet = average_hashtags(self)
-            self.favorites_per_tweet = average_favorites(self)
-            self.curses_per_tweet = curse_words_per_tweet(self)
+            
 
 
 class Tweet(object):
@@ -148,10 +151,14 @@ class Tweet(object):
 
 
 
-#MIGHT THROW AN ERROR IF FIRST_TWEET IS NONE
 #Returns number of tweets, time of first tweet, and tweets/day average
 def find_num_tweets(twitter_user):
     num_tweets = len(twitter_user.tweets)
+
+    if num_tweets == 0:
+        twitter_user.error = "Not Enough Data"
+        return 0
+
     first_tweet = twitter_user.tweets[-1]
     time = first_tweet.time_created
     now = datetime.datetime.now()
@@ -167,14 +174,15 @@ def find_num_tweets(twitter_user):
 
 
 
-#NEED TO CHECK IF THERE ARE ANY FOLLOWERS, ERROR HANDLE
 def following_followers_ratio(twitter_user):
+    if twitter_user.followers_num == 0:
+        twitter_user.error = "Not Enough Data"
+        return 0
+
     return float(twitter_user.following_num)/float(twitter_user.followers_num)
 
-    #Maybe have tiers--if your ratio is below 1/1000, CELEBRITY STATUS WOOHOO
 
 
-#NEED TO CHECK IF THERE ARE ANY TWEETS, ERROR HANDLE
 def least_popular_tweet(twitter_user):
     #Calculate tweet popularity as favorites+retweets
     least_pop = twitter_user.tweets[0]
@@ -186,7 +194,6 @@ def least_popular_tweet(twitter_user):
     return least_pop
 
 
-#NEED TO CHECK IF THERE ARE ANY TWEETS, ERROR HANDLE
 def most_popular_tweet(twitter_user):
     #Calculate tweet popularity as favorites+retweets
     most_pop = twitter_user.tweets[0]
@@ -198,7 +205,6 @@ def most_popular_tweet(twitter_user):
     return most_pop
 
 
-#NEED TO CHECK IF THERE ARE ANY TWEETS, ERROR HANDLE
 def average_hashtags(twitter_user):
     #Calculate the average number of hashtags per tweet
     hashtag_num = 0
@@ -208,18 +214,10 @@ def average_hashtags(twitter_user):
 
     return float(hashtag_num)/float(len(twitter_user.tweets))
 
-    '''Neil's average hashtags per tweet seems super low, either he actually doesn't do it much
-    or something is wrong'''
 
-
-#NEED TO CHECK IF THERE ARE ANY TWEETS, ERROR HANDLE
+#Calculate the average number of favorites per tweet
 def average_favorites(twitter_user):
-    #Calculate the average number of favorites per tweet
     favorites_num = 0
-
-    #If no tweets, return 0
-    #if twitter_user.tweets == []:
-
 
     for tweet in twitter_user.tweets:
         favorites_num += tweet.favorite_count
@@ -227,17 +225,9 @@ def average_favorites(twitter_user):
     return float(favorites_num)/float(len(twitter_user.tweets))
 
 
-    '''This claims that CatpunAmerica has 3 favorites, not two... not sure why'''
-
 def curse_words_per_tweet(twitter_user):
     curses = ["anal","anus","arse","ass","ballsack","balls","bastard","bitch","biatch","bloody","blowjob","blow job","bollock","bollok","boner","boob","bugger","bum","butt","buttplug","clitoris","cock","coon","crap","cunt","damn","dick","dildo","dyke","fag","feck","fellate","fellatio","felching","fuck","f u c k","fudgepacker","fudge packer","flange","Goddamn","God damn","hell","homo","jerk","jizz","knobend","knob end","labia","lmao","lmfao","muff","nigger","nigga","omg","penis","piss","poop","prick","pube","pussy","queer","scrotum","sex","shit","s hit","sh1t","slut","smegma","spunk","tit","tosser","turd","twat","vagina","wank","whore","wtf"]
     return sum(1.0 for tweet in twitter_user.tweets if any(curse in tweet.text for curse in curses))/float(len(twitter_user.tweets))
-
-
-'''Potentially also want to add the following stats:
-    -average length of tweet
-    -average curse words per tweet
-'''
 
 
 
